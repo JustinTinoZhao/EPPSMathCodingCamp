@@ -1,0 +1,283 @@
+---
+title: "EPPS Math Coding Camp"
+subtitle: "Quarto & LaTex"
+instructor: "Dongeun Kim"
+date: "August 19, 2025"
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: show
+    code-tools: true
+    highlight-style: github
+---
+
+Instructor: `r rmarkdown::metadata$instructor`
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Quarto & LaTeX
+
+This document will provide you a very brief introduction to using Quarto and LaTex to improve your reports and presentation of your data analyses.
+
+## Quarto
+
+Quarto is an expanded version of R Markdown for rendering reports with integrated code like the one you are currently reading. To create a quarto document, select `Create a new Quarto document` from the `New File` drop down in RStudio.
+
+
+As this is a markdown style, most of the options this gives you access to are ways to modify text or add other embellishments to your report. Below are a few examples on how to change the text.
+
+## LaTeX
+
+LaTeX is a high-quality typesetting system that is widely used for producing scientific and mathematical documents. It is especially useful when your report includes complex equations, tables, and citations.
+
+To create a LaTeX document, you typically start with a `.tex` file and compile it into a PDF using a TeX engine such as `pdflatex`, `xelatex`, or `lualatex`.
+
+While Quarto is excellent for combining code and text, LaTeX is the go-to tool when you want full control over formatting in academic writing, especially for papers with complex equations.
+
+
+## Quarto & LaTeX — How They Fit Together
+
+- **Quarto** is a publishing system that takes `.qmd` and produces HTML / PDF / Word / slides.
+- For **PDF**, Quarto converts Markdown → **LaTeX** and calls a LaTeX engine (`pdflatex`, `xelatex`, or `lualatex`).
+- For **HTML**, LaTeX isn’t required; math renders via **MathJax/KaTeX** in the browser.
+
+Render flow (PDF): `.qmd` → Pandoc Markdown → **LaTeX** → **PDF**.
+
+## Getting Started in RStudio (Step-by-step)
+
+1. **New File ▶ Quarto Document…**  
+2. Pick a title and author; choose **HTML** to start.  
+3. Click **Render**. Confirm an `.html` appears in your project folder.  
+4. Switch to **PDF** (requires LaTeX installed; TinyTeX recommended).
+
+
+## Core Markdown Formatting
+
+### Text
+
+| **Markdown** | **Renders as** |
+|:--|:--|
+| `*italics*` | *italics* |
+| `**bold**` | **bold** |
+| `***bold italics***` | ***bold italics*** |
+| `superscript^2^` | superscript^2^ |
+| `subscript~i~` | subscript~i~ |
+| `~~strike~~` | ~~strike~~ |
+| `` `verbatim` `` | `verbatim` |
+
+### Headings
+
+| **Markdown** | **Heading** |
+|:--|:--|
+| `# Heading 1` | # Heading 1 |
+| `## Heading 2` | ## Heading 2 |
+| `### Heading 3` | ### Heading 3 |
+| `#### Heading 4` | #### Heading 4 |
+| `##### Heading 5` | ##### Heading 5 |
+| `###### Heading 6` | ###### Heading 6 |
+
+### Links
+
+| **Markdown** | **Renders as** |
+|:--|:--|
+| `<https://quarto.org>` | <https://quarto.org> |
+| `[Quarto](https://quarto.org)` | [Quarto](https://quarto.org) |
+
+### Tables (Markdown)
+
+**Markdown source:**
+```
+| Right | Left | Default | Center |
+|------:|:-----|---------|:------:|
+|    12 | 12   | 12      |   12   |
+|   123 | 123  | 123     |  123   |
+|     1 | 1    | 1       |   1    |
+```
+
+**Rendered:**
+
+| Right | Left | Default | Center |
+|------:|:-----|---------|:------:|
+|    12 | 12   | 12      |   12   |
+|   123 | 123  | 123     |  123   |
+|     1 | 1    | 1       |   1    |
+
+## Source Code & Runnable Chunks
+
+Use a fenced code block for **plain** code (not executed):
+```
+```r
+#### plain code, not evaluated
+1 + 1
+```
+```
+
+Use a **runnable** chunk with options (note the `{r}` + `#|` lines):
+```{r}
+#| label: demo-chunk
+#| fig-cap: "A simple demo figure"
+plot(cars)
+```
+
+Useful options:
+- `#| eval: false` → show code but don’t run
+- `#| echo: false` → hide code, show results
+- `#| warning: false`, `#| message: false` → suppress output noise
+- `#| fig-cap: "Caption"` → caption figures
+- `#| tbl-cap: "Caption"` → caption tables
+
+## Working Directory (Reproducible Paths)
+
+Prefer project‑root execution so all paths are consistent:
+```yaml
+execute:
+  dir: project
+```
+
+If absolutely needed, set a custom path in a setup chunk:
+```{r}
+#| include: false
+# setwd("data")  # Not recommended unless necessary
+```
+
+## Math & LaTeX in Quarto
+
+### Inline vs Display
+
+Inline math: `\( E = mc^2 \)` → \( E = mc^2 \).
+
+Display math:
+```latex
+$$
+y = \beta_0 + \beta_1 x + \epsilon
+$$
+```
+
+### Align Environment & Cross-refs
+
+```latex
+\begin{align}
+y &= \beta_0 + \beta_1 x + \epsilon \\
+\hat{y} &= \beta_0 + \beta_1 x
+\end{align}
+```
+
+Number and reference:
+````markdown
+$$
+E = mc^2
+(\#eq-einstein)
+$$
+
+As shown in @eq-einstein, mass–energy equivalence holds.
+````
+
+::: callout-tip
+Label equations with `(\#eq-name)`, then cite with `@eq-name`.
+:::
+
+## Figures & Tables with Cross-refs
+
+Figure (label via `label:` and caption via `fig-cap:`):
+```{r}
+#| label: fig-cars
+#| fig-cap: "Speed vs Stopping Distance"
+plot(cars)
+```
+Refer to **@fig-cars** in text.
+
+Table (create an R table and label it):
+```{r}
+#| label: tbl-head
+#| tbl-cap: "First rows of mtcars"
+head(mtcars, 6)
+```
+Refer to **@tbl-head** in text.
+
+## Showing LaTeX Commands Literally (Escaping)
+
+Use **inline code** for short commands:
+```markdown
+- `\documentclass` sets the type of document.
+- `\usepackage{amsmath}` adds math support.
+- `\maketitle` prints title/author/date.
+- `\begin{document}` starts visible content.
+```
+
+Use a **fenced code block** for longer examples:
+````markdown
+```latex
+\documentclass{article}
+\usepackage{amsmath}
+\title{My First LaTeX Doc}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+\maketitle
+Hello World!
+\end{document}
+```
+````
+
+::: callout-warning
+If you type a backslash in *plain text* (not code), escape it as `\`.
+:::
+
+## Customizing PDF with LaTeX
+
+### Add packages/macros via `preamble.tex`
+YAML in your `.qmd`:
+```yaml
+format:
+  pdf:
+    include-in-header: preamble.tex
+```
+Create `preamble.tex` (project root or same folder):
+```tex
+% preamble.tex
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\newcommand{\R}{\mathbb{R}}
+```
+
+### Use a custom LaTeX template
+```yaml
+format:
+  pdf:
+    template: templates/custom.tex
+    include-in-header: preamble.tex
+```
+
+### Project-wide defaults (`_quarto.yml`)
+```yaml
+project:
+  type: default
+
+format:
+  html:
+    toc: true
+  pdf:
+    pdf-engine: lualatex
+    toc: true
+
+execute:
+  dir: project
+```
+
+## Citations (Brief)
+
+Add a bibliography in YAML:
+```yaml
+bibliography: references.bib
+csl: apa.csl   # optional style
+```
+Cite with `@key` and include a refs section:
+```
+## References
+```
+(Quarto/Pandoc will print the bibliography automatically at the end.)
+
